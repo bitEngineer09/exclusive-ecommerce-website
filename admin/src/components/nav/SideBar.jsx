@@ -21,6 +21,25 @@ const SideBar = () => {
                 bg-[#1C1917] text-(--text-secondary)
                 px-[3rem]
             '>
+            <div
+               onClick={() => {
+                        navigate("/");
+                        setSideItem("listItems")
+                    }}
+                className={`
+                    flex items-center justify-start gap-[1.6rem]
+                    mt-[2rem]
+                    w-full p-[1.5rem_2rem] hover:bg-[#44403C] hover:text-(--text-secondary)
+                    text-[2rem]
+                    text-(--text-secondary) text-center 
+                    border-zinc-400 ease-in-out duration-150 rounded-[0.9rem] 
+                    cursor-pointer 
+                    ${location.pathname === "/" ? "bg-rose-800 hover:bg-rose-800" : ""}
+                `}>
+                <FaList />
+                <span>List Items</span>
+            </div>
+
             {/* <p className='text-[1.7rem] text-zinc-400 px-[3rem] '>Navigation</p> */}
             <div
                 
@@ -41,24 +60,7 @@ const SideBar = () => {
                 <FaPlus />
                 <span>Add Items</span>
             </div>
-            <div
-               onClick={() => {
-                        navigate("/lists");
-                        setSideItem("listItems")
-                    }}
-                className={`
-                    flex items-center justify-start gap-[1.6rem]
-                    mt-[2rem]
-                    w-full p-[1.5rem_2rem] hover:bg-[#44403C] hover:text-(--text-secondary)
-                    text-[2rem]
-                    text-(--text-secondary) text-center 
-                    border-zinc-400 ease-in-out duration-150 rounded-[0.9rem] 
-                    cursor-pointer 
-                    ${location.pathname === "/lists" ? "bg-rose-800 hover:bg-rose-800" : ""}
-                `}>
-                <FaList />
-                <span>List Items</span>
-            </div>
+            
             <div
                 onClick={() => {
                         navigate("/orders");

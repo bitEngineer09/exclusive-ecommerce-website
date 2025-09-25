@@ -17,16 +17,17 @@ const NavDesktop = ({
     showProfilePopup, setShowProfilePopup
 }) => {
 
-    
+
     // USE STATES
     const [searchQuery, setSearchQuery] = useState("");
     const [wishListLength, setWishListLength] = useState(0);
     const [cartLength, setCartLength] = useState(0);
-
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
     // CONTEXT DATA
     const { cartItems } = useContext(cartDataContext);
-    const { wishlistData } = useContext(productDataContext);
+    const { wishlistData, getAllProductsData } = useContext(productDataContext);
 
 
     // USE REF
@@ -44,6 +45,7 @@ const NavDesktop = ({
 
 
 
+    // HANDLE CLICK OUTSIDE
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (popupRef.current && !popupRef.current.contains(e.target)) {
@@ -55,6 +57,34 @@ const NavDesktop = ({
             document.removeEventListener("mousedown", handleClickOutside);
         }
     }, []);
+
+
+    // FETCH ALL PRODUCTS
+    useEffect(() => {
+        const fetchAllProuducts = async () => {
+            try {
+                const response = await getAllProductsData();
+                console.log(response.products);
+                setProducts(response.products);
+                console.log(products);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchAllProuducts();
+    }, []);
+
+    useEffect(() => {
+        if (searchQuery.trim() === "") {
+            setFilteredProducts([]);
+            return;
+        }
+
+        const filtered = products.filter((product) =>
+            product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredProducts(filtered);
+    }, [searchQuery, products]);
 
 
     return (
@@ -219,8 +249,6 @@ const NavDesktop = ({
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             type="text"
-                            name=""
-                            id=""
                             placeholder='What are you looking for ?'
                             className='
                             xl:text-[0.9rem] 2xl:text-[1.1rem]
@@ -236,6 +264,34 @@ const NavDesktop = ({
                             md:bottom-[0.9rem] 2xl:bottom-[0.8rem]
                             cursor-pointer
                     '/>
+                        {
+                            filteredProducts.length > 0 && (
+                                <div
+                                    className="
+                                        absolute
+                                        top-[110%] left-0
+                                        w-full 
+                                        bg-white text-black
+                                        rounded shadow-md
+                                        z-50 max-h-[200px]
+                                        overflow-y-auto
+                                        ">
+                                    {filteredProducts.map(product => (
+                                        <div
+                                            key={product.id}
+                                            onClick={() => {
+                                                navigate(`/collections/${product._id}`);
+                                                setSearchQuery("");
+                                                setFilteredProducts([]);
+                                            }}
+                                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                                        >
+                                            {product.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            )
+                        }
                     </div>
 
                     <div className="profile w-[7rem] flex flex-col items-center justify-between">

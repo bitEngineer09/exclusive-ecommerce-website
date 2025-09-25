@@ -39,6 +39,15 @@ const MyOrder = () => {
     return (
         <div className='w-full min-h-screen bg-(--bg-color)'>
             <PrimaryNavbar />
+            <p
+                className='
+                  text-white
+                   w-full
+                   px-[1rem] xl:px-[6rem] 2xl:px-[10rem]
+                   my-[1rem]'>
+                Home /
+                <span className='text-(--color-primary)'> Orders</span>
+            </p>
             <div className='bg-zinc-800 py-[1.5rem]'>
                 <h1
                     className="

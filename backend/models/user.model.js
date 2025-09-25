@@ -1,14 +1,29 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    name: {
+    firstName: {
         type: String,
         required: true,
+    },
+    lastName: {
+        type: String,
     },
     email: {
         type: String,
         required: true,
         unique: true,
+    },
+    phone: {
+        type: Number,
+        required: true,
+    },
+    dob: {
+        type: Date,
+        required: true,
+    },
+    gender: {
+        type: String,
+        required: true,
     },
     password: {
         type: String,
@@ -42,7 +57,7 @@ const userSchema = new mongoose.Schema({
     wishList: [
         {
             productId: {
-                type: mongoose.Schema.Types.ObjectId,   
+                type: mongoose.Schema.Types.ObjectId,
                 ref: "Product",
             }
         }

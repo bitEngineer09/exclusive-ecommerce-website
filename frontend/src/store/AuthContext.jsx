@@ -31,18 +31,9 @@ const AuthContext = ({ children }) => {
 
 
     // SIGNUP CONTEXT
-    const handleSignup = async (name, email, password) => {
-        try {
-            const result = await signupService(name, email, password);
-            // console.log(result);
-            return result;
-
-        } catch (error) {
-            return {
-                success: false,
-                message: error,
-            }
-        }
+    const handleSignup = async (firstName, lastName, email, phone, dob, gender, password) => {
+        const result = await signupService(firstName, lastName, email, phone, dob, gender, password);
+        return result;
     }
 
 
@@ -113,7 +104,7 @@ const AuthContext = ({ children }) => {
 
             const user = result.user;
             const email = user.email;
-            
+
             const response = await googleLoginService(email);
             setLoggedinUserData(response?.data?.user);
             console.log(response.data);

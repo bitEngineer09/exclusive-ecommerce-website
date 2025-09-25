@@ -21,12 +21,18 @@ export const loginService = async (email, password) => {
 
 
 // SIGNUP SERVICES
-export const signupService = async (name, email, password) => {
+export const signupService = async (firstName, lastName, email, phone, dob, gender, password) => {
     try {
-        const response = await axios.post(serverUrl + "/api/auth/register",
-            { name, email, password },
-            { withCredentials: true }
-        );
+        const response = await axios.post(serverUrl + "/api/auth/register", {
+            firstName,
+            lastName,
+            email,
+            phone,
+            dob,
+            gender,
+            password,
+        }, { withCredentials: true });
+
         return response;
 
     } catch (error) {
@@ -36,6 +42,7 @@ export const signupService = async (name, email, password) => {
         }
     }
 }
+
 
 
 // LOGOUT SERVICES

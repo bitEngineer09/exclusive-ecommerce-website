@@ -10,90 +10,94 @@ import {
     verifyPassword
 } from "../services/auth.services.js";
 
-import {
-    loginUserValidator,
-    registerUserValidator
-} from "../validators/auth.validator.js";
 
 
-// REGISTER CONTROLLER
+// REGISTER CONTROLLER without validator
 export const register = async (req, res) => {
     try {
-        // validator
-        const { data, error } = registerUserValidator.safeParse(req.body);
-        if (error) return res.status(400).json({ success: false, message: `registerd user validation error: ${error}` });
+        const { firstName, lastName, email, phone, dob, gender, password } = req.body;
+        console.log("register body data:", req.body);
 
-        const { name, email, password } = data
-        console.log("register body data:", data);
+        // Basic check for required fields (you can expand this as needed)
+        if (!firstName || !email || !phone || !dob || !gender || !password) {
+            return res.status(400).json({ success: false, message: "All required fields must be provided" });
+        }
 
-        // check if same email exists ?
+        // Check if user with the same email already exists
         const existingUser = await findUserByEmail(email);
-        if (existingUser) return res.status(400).json({ success: false, message: "User already exists" });
+        if (existingUser) {
+            return res.status(400).json({ success: false, message: "User already exists" });
+        }
 
+        // Encrypt the password
         const encryptedPassword = await hashPassword(password);
-        if (!encryptedPassword) return res.status(500).json({ success: false, message: "password encryption error" });
+        if (!encryptedPassword) {
+            return res.status(500).json({ success: false, message: "Password encryption error" });
+        }
 
-        const newUser = await registerUser(name, email, encryptedPassword);
-        if (!newUser) return res.status(500).json({ success: false, message: "New User registration error" });
+        // Register the new user
+        const newUser = await registerUser(firstName, lastName, email, phone, dob, gender, encryptedPassword);
+        if (!newUser) {
+            return res.status(500).json({ success: false, message: "New user registration error" });
+        }
 
+        // Authenticate user after successful registration (e.g. create session or JWT)
         await authenticate(req, res, newUser);
 
-        return res
-            .status(201)
-            .json({
-                success: true,
-                message: "User registered",
-                user: {
-                    id: newUser._id,
-                    name: newUser.name,
-                    email: newUser.email
-                }
-            });
+        return res.status(201).json({
+            success: true,
+            message: "User registered",
+            user: {
+                id: newUser._id,
+                name: newUser.firstName + " " + newUser.lastName,
+                email: newUser.email
+            }
+        });
 
     } catch (error) {
         console.log("register controller error: ", error);
-        return res.status(500).json({ success: false, message: error });
+        return res.status(500).json({ success: false, message: error.message || error });
     }
-}
+};
+
 
 
 // LOGIN CONTROLLER-------------------------------------------------
 export const login = async (req, res) => {
     try {
-        // validator
-        const { data, error } = loginUserValidator.safeParse(req.body);
-        if (error) return res.status(400).json({ success: false, message: `registerd user validation error: ${error}` });
+        const { email, password } = req.body;  // Extract email and password from request body
 
-        const { email, password } = data;
-
-        // check if email is already registered ?
+        // Check if email is already registered
         const user = await findUserByEmail(email);
-        if (!user) return res.status(400).json({ success: false, message: "User not registered" });
+        if (!user) {
+            return res.status(400).json({ success: false, message: "User not registered" });
+        }
 
-        // if user is registerd verify its password
+        // Verify password
         const verifiedPassword = await verifyPassword(user.password, password);
-        if (!verifiedPassword) return res.status(400).json({ success: false, message: "Invalid Credentails" });
+        if (!verifiedPassword) {
+            return res.status(400).json({ success: false, message: "Invalid Credentials" });
+        }
 
+        // Authenticate user (e.g., create session or JWT)
         await authenticate(req, res, user);
 
-        return res
-            .status(200)
-            .json({
-                success: true,
-                message: "User logged in",
-                user: {
-                    id: user._id,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                }
-            })
+        return res.status(200).json({
+            success: true,
+            message: "User logged in",
+            user: {
+                id: user._id,
+                name: user.firstName + " " + user.lastName,
+                email: user.email,
+                role: user.role,
+            }
+        });
 
     } catch (error) {
         console.log("login controller error: ", error);
-        return res.status(500).json({ success: false, message: error });
+        return res.status(500).json({ success: false, message: error.message || error });
     }
-}
+};
 
 
 
@@ -115,6 +119,7 @@ export const logout = async (req, res) => {
 
 
 
+
 // GET LOGGED IN USER DATA
 export const getUserData = async (req, res) => {
     if (!req.user) return res.status(400).json({ message: "User not authenticated" });
@@ -129,15 +134,21 @@ export const getUserData = async (req, res) => {
         success: true,
         user: {
             id: user._id,
-            name: user.name,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            name: user.firstName + " " + user.lastName,
             email: user.email,
             booking: user.booking,
             listing: user.listing,
+            phone: user.phone,
+            dob: user.dob,
+            gender: user.gender,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt
         }
     });
 };
+
 
 
 

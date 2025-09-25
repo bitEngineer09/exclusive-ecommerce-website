@@ -27,7 +27,7 @@ const Collections = () => {
   const { getAllProductsData, handleAddWishList, handleWishListData } = useContext(productDataContext);
   const { addItemsToCart } = useContext(cartDataContext);
 
-  
+
   useEffect(() => {
     const fetchAllProducts = async () => {
       try {
@@ -48,7 +48,7 @@ const Collections = () => {
       try {
         const response = await handleWishListData();
         // console.log(response);
-        setWishListProductIds(response?.wishListData?.map((item) =>  item.productId._id));
+        setWishListProductIds(response?.wishListData?.map((item) => item.productId._id));
       } catch (error) {
         console.log(error);
       }
@@ -115,7 +115,7 @@ const Collections = () => {
             <div
               className='
                 collections
-                w-full
+                w-full min-h-screen
                 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-3 2xl:grid-cols-4
                 gap-x-[0.5rem]
                 gap-y-[0.6rem]
@@ -131,6 +131,7 @@ const Collections = () => {
                       key={product._id || index}
                       className='
                       bg-stone-900
+                      h-[40rem]
                       flex flex-col
                       p-[0.2rem] 2xl:p-[0.6rem]
                       pb-[0.5rem] 
@@ -166,7 +167,7 @@ const Collections = () => {
                         text-zinc-500
                         text-[0.65rem] sm:text-[0.75rem] md:text-[0.85rem] xl:text-[0.8rem]
                         h-[2rem] mb-[1.8rem]
-                      '>{product.description.slice(0, 130) + "..."}</p>
+                      '>{product.description.slice(0, 110) + "..."}</p>
                       <div className='flex items-center justify-between'>
                         <p
                           className='
@@ -241,7 +242,7 @@ const Collections = () => {
                             hover:text-rose-700 hover:scale-120 ease-in-out duration-150
                             cursor-pointer
                             ${wishListProductIds?.includes(product._id) ? "text-rose-700" : "text-zinc-400"}
-                          `}/>
+                          `} />
                       </div>
 
                     </div>

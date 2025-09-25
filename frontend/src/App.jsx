@@ -13,6 +13,7 @@ import Cart from './pages/Cart';
 import Wishlist from './pages/Wishlist';
 import Order from './pages/Order';
 import MyOrder from './pages/MyOrder';
+import Profile from './pages/Profile';
 
 
 const App = () => {
@@ -32,6 +33,7 @@ const App = () => {
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/order" element={<Order />} />
             <Route path="/myorder" element={<MyOrder />} />
+            <Route path="/profile" element={<Profile />} />
          </Routes>
 
          <ToastContainer

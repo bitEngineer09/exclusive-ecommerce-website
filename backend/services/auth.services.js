@@ -3,8 +3,8 @@ import jwt from 'jsonwebtoken';
 import { User } from '../models/user.model.js'
 import { Session } from '../models/session.model.js';
 
-export const registerUser = async (name, email, encryptedPassword) => {
-    return await User.create({ name, email, password: encryptedPassword });
+export const registerUser = async (firstName, lastName, email, phone, dob, gender, encryptedPassword) => {
+    return await User.create({ firstName, lastName, email, phone, dob, gender, password: encryptedPassword });
 }
 
 export const findUserByEmail = async (email) => {
@@ -25,7 +25,7 @@ export const verifyPassword = async (databasePassword, inputPassword) => {
 }
 
 export const createUserByEmail = async (name, email) => {
-    return await User.create({name, email});
+    return await User.create({ name, email });
 }
 //!---------------------------------------------------------------------------------
 
@@ -42,7 +42,7 @@ export const createAccessToken = ({ id, name, email, sessionId }) => {
 }
 
 export const createAccessTokenAdmin = (email) => {
-    return jwt.sign({email}, process.env.JWT_SECRET, {expiresIn: "7d"});
+    return jwt.sign({ email }, process.env.JWT_SECRET, { expiresIn: "7d" });
 }
 
 export const createRefreshToken = (sessionId) => {
@@ -57,7 +57,8 @@ export const verifyToken = (token) => {
 //? AUTHENTICATE Function
 export const authenticate = async (req, res, loggedInUser, registeredUser) => {
     const account = loggedInUser ?? registeredUser;
-    const { _id: id, name, email } = account;
+    const { _id: id, firstName, lastName, email } = account;
+    const name = firstName + " " + lastName;
 
     const session = await createSession({
         ip: req.ClientIp,
@@ -102,7 +103,7 @@ export const refreshTheTokens = async (refreshToken) => {
 
         const userInfo = {
             id: user._id,
-            name: user.name,
+            name: user.firstName + " " + user.lastName,
             email: user.email,
             sessionId: currentSession._id,
         }
@@ -111,7 +112,7 @@ export const refreshTheTokens = async (refreshToken) => {
 
         const newRefreshToken = createRefreshToken(currentSession._id);
 
-        return { newAccessToken, newRefreshToken, user:userInfo };
+        return { newAccessToken, newRefreshToken, user: userInfo };
 
     } catch (error) {
         console.log(`refresh the token method error:${error}`);

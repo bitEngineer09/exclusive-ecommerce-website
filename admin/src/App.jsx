@@ -14,9 +14,9 @@ const App = () => {
   return (
     <Routes>
       <Route path='/login' element={!admin ? <Login />: <Navigate to="/"/>}/>
-      <Route path='/' element={admin ? <Home /> : <Navigate to="/login" />}/>
+      {/* <Route path='/' element={admin ? <Home /> : <Navigate to="/login" />}/> */}
+      <Route path='/' element={admin ? <Lists /> : <Navigate to="/login" />}/>
       <Route path='/add' element={admin ? <Add /> : <Navigate to="/login" />}/>
-      <Route path='/lists' element={admin ? <Lists /> : <Navigate to="/login" />}/>
       <Route path='/orders' element={admin ? <Orders /> : <Navigate to="/login" />}/>
     </Routes>
   )
