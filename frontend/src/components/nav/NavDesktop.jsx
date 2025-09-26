@@ -64,9 +64,9 @@ const NavDesktop = ({
         const fetchAllProuducts = async () => {
             try {
                 const response = await getAllProductsData();
-                console.log(response.products);
-                setProducts(response.products);
-                console.log(products);
+                // console.log(response.products);
+                setProducts(response?.products);
+                // console.log(products);
             } catch (error) {
                 console.log(error);
             }
@@ -80,8 +80,8 @@ const NavDesktop = ({
             return;
         }
 
-        const filtered = products.filter((product) =>
-            product.name.toLowerCase().includes(searchQuery.toLowerCase())
+        const filtered = products?.filter((product) =>
+            product?.name.toLowerCase().includes(searchQuery.toLowerCase())
         );
         setFilteredProducts(filtered);
     }, [searchQuery, products]);

@@ -1,47 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { MdCurrencyRupee } from "react-icons/md";
 import { useNavigate } from 'react-router-dom';
+import { orderDataContext } from '../../store/OrderContext';
 
 const OrderItems = ({ orderData }) => {
 
     // USE STATES
-    const [finalData, setFinalData] = useState([]);
     const [totalItems, setTotalItems] = useState(0);
     const [totalOrders, setTotalOrders] = useState(0);
     const [totalSpent, setTotalSpent] = useState(0);
 
-    console.log(orderData);
+    // CONTEXT DATA
+    const { finalData } = useContext(orderDataContext);
 
     // USE NAVIGATE
     const navigate = useNavigate();
-
-    // GETTING FINAL DATA
-    useEffect(() => {
-        const processOrderData = () => {
-            if (orderData && orderData.length > 0) {
-                const allItems = orderData.flatMap(order => {
-                    return order.items.map(item => ({
-                        quantity: item.quantity,
-                        price: item.price,
-                        productDetails: item.productId,
-                        orderId: order._id,
-                        date: order.date,
-                    }));
-                });
-
-                setFinalData(allItems);
-            }
-        };
-
-        try {
-            processOrderData();
-        } catch (error) {
-            console.log("Error processing order data:", error);
-        }
-    }, [orderData]);
-    console.log("FINAL DATA:", finalData);
-
-
 
     useEffect(() => {
 
@@ -71,7 +44,7 @@ const OrderItems = ({ orderData }) => {
 
 
     return (
-        <div className='w-full px-[15rem]'>
+        <div className='w-full px-[15rem] mb-[3rem]'>
             <div className='flex justify-between w-full mt-[2rem]'>
                 <div
                     className='
@@ -114,14 +87,14 @@ const OrderItems = ({ orderData }) => {
             </div>
 
             {
-                finalData?.map((itemDetails) => {
+                finalData?.map((itemDetails, index) => {
                     const newDate = new Date(itemDetails.date).toLocaleDateString("en-IN", {
                         year: "numeric",
                         month: "short",
                         day: "numeric"
                     });
                     return (
-                        <div className='mt-[3rem] text-white'>
+                        <div key={index} className='mt-[3rem] text-white'>
                             <div className='flex w-full justify-between'>
                                 <span className='bg-zinc-900 p-[0.2rem_1rem] rounded-[0.3rem] '>#ORDER ID: {itemDetails?.orderId}</span>
                                 <p >Placed on: <span className='text-rose-500'>{newDate}</span></p>
@@ -135,7 +108,7 @@ const OrderItems = ({ orderData }) => {
                                             className='w-[8rem] rounded-[0.5rem]'
                                         />
                                         <div className='w-[30rem] flex flex-col gap-[0.5rem]'>
-                                            <p  
+                                            <p
                                                 onClick={() => navigate(`/collections/${itemDetails.productDetails._id}`)}
                                                 className='text-[1.1rem] hover:text-rose-400 cursor-pointer'>{itemDetails.productDetails.name.slice(0, 25) + "..."}</p>
                                             <p className='text-[0.9rem] text-zinc-400'>{itemDetails.productDetails.description.slice(0, 100) + "..."}</p>
@@ -144,9 +117,24 @@ const OrderItems = ({ orderData }) => {
                                             <p className='flex items-center underline underline-offset-3'>Total Price: <span className='flex items-center text-rose-500 font-medium'><MdCurrencyRupee />{(itemDetails.price * itemDetails.quantity).toLocaleString()}</span></p>
                                         </div>
                                     </div>
-                                    <button className='bg-indigo-600 p-[0.5rem_1.8rem] text-[0.9rem] rounded-full'>
-                                        Reorder
-                                    </button>
+                                    <div className='flex items-center gap-[1rem]'>
+                                        <p
+                                            className='
+                                                p-[0.5rem_1.8rem]
+                                                text-[0.9rem]
+                                                rounded-full 
+                                                bg-orange-600
+                                            '>{itemDetails.status}</p>
+                                        <button
+                                            className='
+                                                bg-indigo-600 
+                                                p-[0.5rem_1.8rem]
+                                                text-[0.9rem]
+                                                rounded-full
+                                            '>
+                                            Reorder
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -13,7 +13,7 @@ const LatestCollections = ({navigate}) => {
         const fetchProducts = async () => {
             try {
                 const result = await getAllProductsData();
-                setProducts(result.products);
+                setProducts(result?.products);
                 // console.log(result.products);
             } catch (error) {
                 console.log(error);

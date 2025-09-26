@@ -9,15 +9,20 @@ import { authDataContext } from './store/AuthContext';
 
 const App = () => {
 
-  const {admin} = useContext(authDataContext);
-  
+  const { admin } = useContext(authDataContext);
+
   return (
     <Routes>
-      <Route path='/login' element={!admin ? <Login />: <Navigate to="/"/>}/>
+      {/* <Route path='/login' element={!admin ? <Login />: <Navigate to="/"/>}/> */}
       {/* <Route path='/' element={admin ? <Home /> : <Navigate to="/login" />}/> */}
-      <Route path='/' element={admin ? <Lists /> : <Navigate to="/login" />}/>
-      <Route path='/add' element={admin ? <Add /> : <Navigate to="/login" />}/>
-      <Route path='/orders' element={admin ? <Orders /> : <Navigate to="/login" />}/>
+      {/* <Route path='/' element={admin ? <Lists /> : <Navigate to="/login" />}/> */}
+      {/* <Route path='/add' element={admin ? <Add /> : <Navigate to="/login" />}/> */}
+      {/* <Route path='/orders' element={admin ? <Orders /> : <Navigate to="/login" />}/> */}
+
+      <Route path='/login' element={<Login />} />
+      <Route path='/' element={<Lists />} />
+      <Route path='/add' element={<Add />} />
+      <Route path='/orders' element={<Orders />} />
     </Routes>
   )
 }
